@@ -1,0 +1,1501 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Willy B's Grill | Smash Burgers | Boone, NC</title>
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <style>
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    :root {
+      --bg:       #FAF8F4;
+      --bg-alt:   #F1EBE0;
+      --bg-dark:  #1A1814;
+      --text:     #1A1814;
+      --muted:    #8A7A6A;
+      --accent:   #C44B1A;
+      --border:   #DDD5C8;
+      --white:    #FFFFFF;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text);
+      font-family: 'Inter', sans-serif;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ══════════════════════════════════════
+       EMAIL POPUP
+    ══════════════════════════════════════ */
+    #email-popup-overlay {
+      position: fixed;
+      inset: 0;
+      background: rgba(26,24,20,0.65);
+      z-index: 8000;
+      animation: fadeIn 0.3s ease;
+    }
+    #email-popup-box {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      z-index: 8001;
+      background: var(--bg);
+      width: min(480px, 92vw);
+      padding: 3rem 2.5rem 2.25rem;
+      text-align: center;
+      animation: popupSlide 0.4s cubic-bezier(0.34,1.56,0.64,1);
+      box-shadow: 0 30px 80px rgba(0,0,0,0.2);
+    }
+    @keyframes popupSlide {
+      0%   { opacity: 0; transform: translate(-50%, calc(-50% + 20px)); }
+      100% { opacity: 1; transform: translate(-50%, -50%); }
+    }
+    #email-popup-close {
+      position: absolute;
+      top: 1rem; right: 1.25rem;
+      background: none;
+      border: none;
+      font-size: 1.5rem;
+      color: var(--muted);
+      cursor: pointer;
+      line-height: 1;
+      transition: color 0.2s;
+    }
+    #email-popup-close:hover { color: var(--text); }
+    #email-popup-logo img {
+      width: 72px;
+      height: 72px;
+      border-radius: 50%;
+      object-fit: cover;
+      margin-bottom: 1.25rem;
+    }
+    #email-popup-eyebrow {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.6rem;
+    }
+    #email-popup-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 2.2rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.75rem;
+    }
+    #email-popup-sub {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      margin-bottom: 1.75rem;
+    }
+    #email-popup-form {
+      display: flex;
+      flex-direction: column;
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+    #email-popup-input {
+      width: 100%;
+      padding: 0.85rem 1.1rem;
+      border: 1.5px solid var(--border);
+      background: var(--white);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.9rem;
+      color: var(--text);
+      outline: none;
+      transition: border-color 0.2s;
+    }
+    #email-popup-input:focus { border-color: var(--accent); }
+    #email-popup-input::placeholder { color: var(--muted); }
+    #email-popup-submit {
+      width: 100%;
+      padding: 0.9rem;
+      background: var(--text);
+      color: var(--bg);
+      border: none;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+    #email-popup-submit:hover { background: var(--accent); }
+    #email-popup-success {
+      padding: 1rem 0;
+    }
+    #email-popup-check {
+      font-size: 2rem;
+      color: var(--accent);
+      margin-bottom: 0.5rem;
+    }
+    #email-popup-success p {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1rem;
+    }
+    #email-popup-skip {
+      background: none;
+      border: none;
+      font-size: 0.72rem;
+      color: var(--muted);
+      cursor: pointer;
+      letter-spacing: 1px;
+      text-decoration: underline;
+      text-underline-offset: 3px;
+      transition: color 0.2s;
+      margin-top: 0.25rem;
+    }
+    #email-popup-skip:hover { color: var(--text); }
+
+    /* ══════════════════════════════════════
+       LOADING SCREEN
+    ══════════════════════════════════════ */
+    #loader {
+      position: fixed;
+      inset: 0;
+      background: var(--white);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 9999;
+      transition: opacity 0.55s ease;
+    }
+    #loader.fade-out {
+      opacity: 0;
+      pointer-events: none;
+    }
+    #loader-logo {
+      width: 280px;
+      height: 280px;
+      border-radius: 50%;
+      object-fit: cover;
+      animation: loaderPop 0.75s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+    }
+    #loader-tagline {
+      margin-top: 1.25rem;
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.1rem;
+      letter-spacing: 5px;
+      color: var(--text);
+      opacity: 0;
+      animation: fadeIn 0.5s ease forwards 0.6s;
+    }
+    @keyframes loaderPop {
+      0%   { opacity: 0; transform: scale(0.55); }
+      100% { opacity: 1; transform: scale(1); }
+    }
+    @keyframes fadeIn {
+      to { opacity: 1; }
+    }
+
+    /* ══════════════════════════════════════
+       NAV
+    ══════════════════════════════════════ */
+    nav {
+      position: fixed;
+      top: 0; left: 0; right: 0;
+      height: 68px;
+      z-index: 100;
+      background: rgba(250, 248, 244, 0.96);
+      backdrop-filter: blur(14px);
+      -webkit-backdrop-filter: blur(14px);
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 3rem;
+      transition: box-shadow 0.3s;
+    }
+    nav.scrolled {
+      box-shadow: 0 2px 24px rgba(0,0,0,0.07);
+    }
+
+    .nav-brand {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.3rem;
+      letter-spacing: 3px;
+      color: var(--text);
+      cursor: pointer;
+      transition: color 0.2s;
+    }
+    .nav-brand:hover { color: var(--accent); }
+
+    .nav-links {
+      display: flex;
+      gap: 2.5rem;
+      list-style: none;
+    }
+    .nav-links a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.7rem;
+      font-weight: 600;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      cursor: pointer;
+      transition: color 0.2s;
+      position: relative;
+      padding-bottom: 3px;
+    }
+    .nav-links a::after {
+      content: '';
+      position: absolute;
+      bottom: 0; left: 0;
+      width: 0; height: 1px;
+      background: var(--accent);
+      transition: width 0.25s ease;
+    }
+    .nav-links a:hover { color: var(--text); }
+    .nav-links a:hover::after,
+    .nav-links a.active::after { width: 100%; }
+    .nav-links a.active { color: var(--text); }
+
+    .hamburger {
+      display: none;
+      flex-direction: column;
+      gap: 5px;
+      cursor: pointer;
+      padding: 4px;
+    }
+    .hamburger span {
+      display: block;
+      width: 22px;
+      height: 1.5px;
+      background: var(--text);
+      transition: all 0.3s;
+    }
+
+    /* ══════════════════════════════════════
+       PAGE SYSTEM
+    ══════════════════════════════════════ */
+    .page { display: none; }
+    .page.active { display: block; }
+
+    /* ══════════════════════════════════════
+       HOME — HERO (split layout)
+    ══════════════════════════════════════ */
+    .hero {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      padding-top: 68px;
+    }
+
+    .hero-left {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      padding: 5rem 3.5rem 5rem 5.5rem;
+      background: var(--bg);
+    }
+
+    .hero-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.75rem;
+      font-size: 0.68rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.25rem;
+    }
+    .hero-eyebrow::before {
+      content: '';
+      display: block;
+      width: 28px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hero-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(5rem, 8.5vw, 8.5rem);
+      line-height: 0.88;
+      letter-spacing: 1px;
+      color: var(--text);
+      margin-bottom: 1.75rem;
+    }
+
+    .hero-tagline {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      font-size: clamp(1rem, 1.6vw, 1.3rem);
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 2.75rem;
+      max-width: 380px;
+    }
+
+    .hero-ctas {
+      display: flex;
+      gap: 1rem;
+      flex-wrap: wrap;
+    }
+
+    .btn {
+      display: inline-block;
+      padding: 0.9rem 2.25rem;
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      border: none;
+      cursor: pointer;
+      transition: all 0.22s ease;
+      text-decoration: none;
+    }
+    .btn-primary {
+      background: var(--text);
+      color: var(--bg);
+    }
+    .btn-primary:hover {
+      background: var(--accent);
+      transform: translateY(-2px);
+    }
+    .btn-outline {
+      background: transparent;
+      color: var(--text);
+      border: 1.5px solid var(--border);
+    }
+    .btn-outline:hover {
+      border-color: var(--text);
+      transform: translateY(-2px);
+    }
+    .btn-light {
+      background: var(--bg);
+      color: var(--text);
+    }
+    .btn-light:hover {
+      background: var(--accent);
+      color: var(--white);
+      transform: translateY(-2px);
+    }
+
+    .hero-right {
+      overflow: hidden;
+      position: relative;
+      background: var(--bg-alt);
+    }
+    .hero-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center;
+      display: block;
+      transition: transform 9s ease;
+    }
+    .hero-right:hover img {
+      transform: scale(1.05);
+    }
+
+    /* ══════════════════════════════════════
+       TICKER STRIP
+    ══════════════════════════════════════ */
+    .strip {
+      background: var(--text);
+      color: var(--bg);
+      padding: 1.6rem 3rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 2rem;
+      overflow: hidden;
+      flex-wrap: wrap;
+    }
+    .strip-text {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.0rem;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      white-space: nowrap;
+    }
+    .strip-dot {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--accent);
+      flex-shrink: 0;
+    }
+
+    /* ══════════════════════════════════════
+       SECTION SHARED
+    ══════════════════════════════════════ */
+    .section-eyebrow {
+      display: flex;
+      align-items: center;
+      gap: 0.65rem;
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 0.85rem;
+    }
+    .section-eyebrow::before {
+      content: '';
+      display: block;
+      width: 22px;
+      height: 1px;
+      background: var(--accent);
+    }
+    .section-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(2.5rem, 5vw, 4rem);
+      letter-spacing: 2px;
+      line-height: 1;
+      margin-bottom: 0.9rem;
+    }
+    .section-sub {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1.05rem;
+      line-height: 1.65;
+    }
+
+    /* ══════════════════════════════════════
+       BURGER SHOWCASE
+    ══════════════════════════════════════ */
+    .showcase {
+      padding: 6.5rem 5.5rem;
+      background: var(--bg);
+    }
+    .showcase-header {
+      margin-bottom: 3.5rem;
+      max-width: 560px;
+    }
+
+    .burger-grid {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1.75rem;
+    }
+
+    .burger-card {
+      background: var(--bg-alt);
+      overflow: hidden;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+    }
+    .burger-card:hover {
+      transform: translateY(-7px);
+      box-shadow: 0 22px 55px rgba(0,0,0,0.11);
+    }
+    .burger-card-img {
+      aspect-ratio: 4 / 3;
+      overflow: hidden;
+    }
+    .burger-card-img img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      display: block;
+      transition: transform 0.5s ease;
+    }
+    .burger-card:hover .burger-card-img img {
+      transform: scale(1.08);
+    }
+    .burger-card-body {
+      padding: 1.3rem 1.6rem 1.75rem;
+    }
+    .burger-card-name {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.35rem;
+      letter-spacing: 2px;
+      margin-bottom: 0.45rem;
+    }
+    .burger-card-desc {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.65;
+    }
+
+    /* ══════════════════════════════════════
+       STORY SECTION
+    ══════════════════════════════════════ */
+    .story {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 560px;
+      background: var(--bg-alt);
+    }
+    .story-left {
+      padding: 6rem 4rem 6rem 5.5rem;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+    }
+    .story-left .section-title { margin-bottom: 1.5rem; }
+    .story-left p {
+      color: var(--muted);
+      font-size: 0.92rem;
+      line-height: 1.9;
+      max-width: 400px;
+      margin-bottom: 1.25rem;
+    }
+    .story-left .btn { margin-top: 1rem; align-self: flex-start; }
+
+    .story-right {
+      overflow: hidden;
+      background: var(--bg-dark);
+    }
+    .story-right img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      object-position: center top;
+      display: block;
+      opacity: 0.9;
+    }
+
+    /* ══════════════════════════════════════
+       VISIT SECTION
+    ══════════════════════════════════════ */
+    .visit {
+      background: var(--bg-dark);
+      color: var(--bg);
+      padding: 6rem 3rem;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+    }
+    .visit .section-eyebrow {
+      color: rgba(250,248,244,0.4);
+    }
+    .visit .section-eyebrow::before {
+      background: rgba(250,248,244,0.3);
+    }
+    .visit-title {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3rem, 7vw, 6rem);
+      letter-spacing: 3px;
+      margin-bottom: 0.75rem;
+    }
+    .visit-sub {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      color: rgba(250,248,244,0.55);
+      font-size: 1.1rem;
+      margin-bottom: 3.5rem;
+    }
+    .visit-info {
+      display: flex;
+      gap: 4rem;
+      margin-bottom: 3.5rem;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .visit-info-item .v-label {
+      font-size: 0.62rem;
+      letter-spacing: 3px;
+      text-transform: uppercase;
+      color: rgba(250,248,244,0.35);
+      margin-bottom: 0.55rem;
+    }
+    .visit-info-item .v-value {
+      font-size: 0.9rem;
+      font-weight: 500;
+      color: var(--bg);
+    }
+
+    /* ══════════════════════════════════════
+       PAGE HEADER (shared for menu/hours/contact)
+    ══════════════════════════════════════ */
+    .page-top {
+      padding-top: 68px;
+      background: var(--bg-alt);
+      border-bottom: 1px solid var(--border);
+    }
+    .page-top-inner {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 3.5rem 2.5rem 2.5rem;
+    }
+    .page-top-inner h1 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: clamp(3.5rem, 8vw, 6rem);
+      letter-spacing: 3px;
+      line-height: 1;
+      margin-bottom: 0.6rem;
+    }
+    .page-top-inner p {
+      font-family: 'DM Serif Display', serif;
+      font-style: italic;
+      color: var(--muted);
+      font-size: 1.05rem;
+    }
+
+    /* ══════════════════════════════════════
+       MENU
+    ══════════════════════════════════════ */
+    .menu-body {
+      max-width: 900px;
+      margin: 0 auto;
+      padding: 4rem 2.5rem 7rem;
+    }
+
+    .menu-category { margin-bottom: 3.5rem; }
+
+    .menu-cat-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      padding-bottom: 0.75rem;
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 0.25rem;
+    }
+
+    .menu-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      padding: 1.2rem 0;
+      border-bottom: 1px solid var(--border);
+      transition: padding-left 0.2s ease;
+    }
+    .menu-item:last-child { border-bottom: none; }
+    .menu-item:hover { padding-left: 10px; }
+
+    .menu-item-info { flex: 1; padding-right: 2rem; }
+    .menu-item-name { font-weight: 600; font-size: 0.95rem; margin-bottom: 0.35rem; }
+    .menu-item-desc { color: var(--muted); font-size: 0.82rem; line-height: 1.6; }
+
+    .menu-item-price {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 1px;
+      color: var(--accent);
+      white-space: nowrap;
+      padding-top: 2px;
+    }
+
+    /* ══════════════════════════════════════
+       HOURS
+    ══════════════════════════════════════ */
+    .hours-body {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 2.5rem 7rem;
+    }
+
+    .sub-label {
+      font-size: 0.67rem;
+      font-weight: 700;
+      letter-spacing: 3.5px;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.6rem;
+    }
+    .sub-label::before {
+      content: '';
+      display: block;
+      width: 18px;
+      height: 1px;
+      background: var(--accent);
+    }
+
+    .hours-grid { margin-bottom: 3.5rem; }
+
+    .hours-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 1rem 0;
+      border-bottom: 1px solid var(--border);
+    }
+    .hours-row:last-child { border-bottom: none; }
+    .hours-row.today {
+      background: var(--bg-alt);
+      margin: 0 -0.85rem;
+      padding: 1rem 0.85rem;
+    }
+
+    .hours-day { font-weight: 500; font-size: 0.9rem; }
+    .hours-time { color: var(--muted); font-size: 0.85rem; }
+    .hours-time.closed { color: var(--border); font-style: italic; }
+
+    .today-badge {
+      font-size: 0.58rem;
+      letter-spacing: 2px;
+      color: var(--white);
+      background: var(--accent);
+      padding: 2px 7px;
+      text-transform: uppercase;
+      margin-left: 0.6rem;
+      vertical-align: middle;
+    }
+
+    .location-card {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      padding: 2.25rem;
+    }
+    .location-card h3 {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.15rem;
+      letter-spacing: 3px;
+      color: var(--accent);
+      text-transform: uppercase;
+      margin-bottom: 1rem;
+    }
+    .location-card p {
+      color: var(--muted);
+      font-size: 0.9rem;
+      line-height: 2;
+    }
+    .location-card a {
+      color: var(--text);
+      text-decoration: none;
+      font-weight: 600;
+      border-bottom: 1px solid var(--border);
+      transition: color 0.2s, border-color 0.2s;
+    }
+    .location-card a:hover {
+      color: var(--accent);
+      border-color: var(--accent);
+    }
+
+    /* ══════════════════════════════════════
+       CONTACT
+    ══════════════════════════════════════ */
+    .contact-body {
+      max-width: 680px;
+      margin: 0 auto;
+      padding: 4rem 2.5rem 7rem;
+    }
+
+    .contact-stack {
+      display: flex;
+      flex-direction: column;
+      gap: 1px;
+      background: var(--border);
+      border: 1px solid var(--border);
+      margin-bottom: 3rem;
+    }
+    .contact-card {
+      background: var(--bg);
+      padding: 1.75rem 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      transition: background 0.2s;
+    }
+    .contact-card:hover { background: var(--bg-alt); }
+
+    .contact-icon {
+      width: 44px;
+      height: 44px;
+      border: 1.5px solid var(--border);
+      background: var(--bg-alt);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      font-size: 1.1rem;
+    }
+    .contact-label {
+      font-size: 0.63rem;
+      letter-spacing: 2.5px;
+      color: var(--muted);
+      text-transform: uppercase;
+      margin-bottom: 0.3rem;
+    }
+    .contact-value { font-size: 0.97rem; font-weight: 500; }
+    .contact-value a { color: var(--text); text-decoration: none; }
+    .contact-value a:hover { color: var(--accent); }
+
+    .instagram-block {
+      background: var(--bg-alt);
+      border: 1px solid var(--border);
+      padding: 2rem;
+      display: flex;
+      align-items: center;
+      gap: 1.5rem;
+      text-decoration: none;
+      color: inherit;
+      transition: background 0.2s, border-color 0.2s;
+    }
+    .instagram-block:hover {
+      background: var(--bg);
+      border-color: var(--accent);
+    }
+    .instagram-block .ig-icon {
+      width: 44px;
+      height: 44px;
+      background: var(--bg);
+      border: 1.5px solid var(--border);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--accent);
+    }
+    .instagram-block .ig-handle {
+      font-family: 'Bebas Neue', sans-serif;
+      font-size: 1.5rem;
+      letter-spacing: 2px;
+    }
+    .instagram-block p {
+      color: var(--muted);
+      font-size: 0.82rem;
+      line-height: 1.6;
+      margin-top: 0.25rem;
+    }
+
+    /* Map embed */
+    .map-wrap {
+      margin-top: 1.5rem;
+      border: 1px solid var(--border);
+      overflow: hidden;
+      line-height: 0;
+    }
+    .map-wrap iframe {
+      display: block;
+      width: 100%;
+      height: 320px;
+      border: 0;
+    }
+
+    /* Contact icon SVGs */
+    .contact-icon svg { display: block; }
+
+    /* ══════════════════════════════════════
+       FOOTER
+    ══════════════════════════════════════ */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 1.75rem 3rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      flex-wrap: wrap;
+      gap: 1rem;
+      background: var(--bg);
+    }
+    footer p {
+      color: var(--muted);
+      font-size: 0.7rem;
+      letter-spacing: 1px;
+    }
+
+    /* ══════════════════════════════════════
+       ANIMATIONS
+    ══════════════════════════════════════ */
+    .fade-up {
+      opacity: 0;
+      transform: translateY(28px);
+      transition: opacity 0.75s ease, transform 0.75s ease;
+    }
+    .fade-up.visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+    .fade-up:nth-child(2) { transition-delay: 0.1s; }
+    .fade-up:nth-child(3) { transition-delay: 0.2s; }
+
+    /* ══════════════════════════════════════
+       MOBILE
+    ══════════════════════════════════════ */
+    @media (max-width: 900px) {
+      nav { padding: 0 1.5rem; }
+      .nav-links { display: none; }
+      .nav-links.open {
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        top: 68px;
+        left: 0; right: 0;
+        background: rgba(250, 248, 244, 0.98);
+        border-bottom: 1px solid var(--border);
+        padding: 1.75rem 2rem;
+        gap: 1.5rem;
+        backdrop-filter: blur(14px);
+      }
+      .hamburger { display: flex; }
+
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+      .hero-right {
+        order: -1;
+        height: 56vw;
+        min-height: 260px;
+        max-height: 420px;
+      }
+      .hero-left {
+        padding: 3rem 1.75rem 4.5rem;
+      }
+      .hero-title { font-size: clamp(4.5rem, 16vw, 7rem); }
+
+      .strip { padding: 1.4rem 1.5rem; gap: 1.2rem; }
+
+      .showcase { padding: 4rem 1.75rem; }
+      .burger-grid { grid-template-columns: 1fr; gap: 1.25rem; }
+
+      .story { grid-template-columns: 1fr; }
+      .story-right { height: 65vw; min-height: 240px; order: -1; }
+      .story-left { padding: 3.5rem 1.75rem; }
+
+      .visit { padding: 4rem 1.75rem; }
+      .visit-info { gap: 2rem; }
+
+      .page-top-inner { padding: 2.5rem 1.75rem 2rem; }
+      .menu-body,
+      .hours-body,
+      .contact-body { padding: 3rem 1.75rem 5rem; }
+
+      footer { padding: 1.5rem 1.75rem; justify-content: center; text-align: center; }
+
+      #loader-logo { width: 200px; height: 200px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- ══════════════════════════════════════
+       EMAIL POPUP
+  ══════════════════════════════════════ -->
+  <div id="email-popup" style="display:none" aria-modal="true" role="dialog">
+    <div id="email-popup-overlay"></div>
+    <div id="email-popup-box">
+      <button id="email-popup-close" aria-label="Close">&times;</button>
+      <div id="email-popup-logo">
+        <img src="./IMG_1211.jpeg" alt="Willy B's Grill" />
+      </div>
+      <div id="email-popup-eyebrow">Stay in the Loop</div>
+      <h2 id="email-popup-title">The Truck is Rolling.</h2>
+      <p id="email-popup-sub">Get first dibs on new burgers, pop-up spots, and weekly specials — straight to your inbox.</p>
+      <form id="email-popup-form" onsubmit="handleEmailSignup(event)">
+        <input type="email" id="email-popup-input" placeholder="your@email.com" required autocomplete="email" />
+        <button type="submit" id="email-popup-submit">Count Me In</button>
+      </form>
+      <div id="email-popup-success" style="display:none">
+        <div id="email-popup-check">&#10003;</div>
+        <p>You're in! We'll keep you posted.</p>
+      </div>
+      <button id="email-popup-skip" type="button">No thanks</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       LOADING SCREEN
+  ══════════════════════════════════════ -->
+  <div id="loader">
+    <img src="./IMG_1211.jpeg" alt="Willy B's Grill" id="loader-logo" />
+    <div id="loader-tagline">Willy B's Grill</div>
+  </div>
+
+  <!-- ══════════════════════════════════════
+       NAV
+  ══════════════════════════════════════ -->
+  <nav id="mainNav">
+    <div class="nav-brand" onclick="showPage('home')">WILLY B'S GRILL</div>
+    <ul class="nav-links" id="navLinks">
+      <li><a class="active" onclick="showPage('home')" id="nav-home">Home</a></li>
+      <li><a onclick="showPage('menu')" id="nav-menu">Menu</a></li>
+      <li><a onclick="showPage('hours')" id="nav-hours">Hours</a></li>
+      <li><a onclick="showPage('contact')" id="nav-contact">Contact</a></li>
+    </ul>
+    <div class="hamburger" onclick="toggleMenu()" id="hamburger">
+      <span></span><span></span><span></span>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════════
+       HOME PAGE
+  ══════════════════════════════════════ -->
+  <div class="page active" id="page-home">
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="hero-left">
+        <span class="hero-eyebrow">Boone, NC &nbsp;·&nbsp; Est. 2025</span>
+        <h1 class="hero-title">WILLY B'S<br>GRILL</h1>
+        <p class="hero-tagline">Fire-pressed smash burgers, made fresh and served straight out of our truck in the High Country.</p>
+        <div class="hero-ctas">
+          <button class="btn btn-primary" onclick="showPage('menu')">See the Menu</button>
+          <button class="btn btn-outline" onclick="showPage('hours')">Find the Truck</button>
+        </div>
+      </div>
+      <div class="hero-right">
+        <img src="./italian_american_burger.jpg" alt="Willy B's Smash Burger" />
+      </div>
+    </section>
+
+    <!-- TICKER STRIP -->
+    <div class="strip">
+      <span class="strip-text">Fresh Never Frozen</span>
+      <div class="strip-dot"></div>
+      <span class="strip-text">Smashed to Order</span>
+      <div class="strip-dot"></div>
+      <span class="strip-text">High Country's Finest</span>
+      <div class="strip-dot"></div>
+      <span class="strip-text">363 Howard St &nbsp;·&nbsp; Boone NC</span>
+      <div class="strip-dot"></div>
+      <span class="strip-text">Est. 2025</span>
+    </div>
+
+    <!-- BURGER SHOWCASE -->
+    <section class="showcase">
+      <div class="showcase-header fade-up">
+        <div class="section-eyebrow">Our Burgers</div>
+        <h2 class="section-title">Built Different.</h2>
+        <p class="section-sub">Simple ingredients, serious technique. Every patty pressed hard on a hot griddle — the way a smash burger was always meant to be.</p>
+      </div>
+      <div class="burger-grid">
+        <div class="burger-card fade-up" onclick="showPage('menu')">
+          <div class="burger-card-img">
+            <img src="./classic_smash_burger.jpg" alt="Classic Smash" />
+          </div>
+          <div class="burger-card-body">
+            <div class="burger-card-name">Classic Smash</div>
+            <div class="burger-card-desc">Cheese, Lettuce, Tomato + Mayo on a toasted brioche bun. The one that started it all.</div>
+          </div>
+        </div>
+        <div class="burger-card fade-up" onclick="showPage('menu')">
+          <div class="burger-card-img">
+            <img src="./bacon_jam_burger.jpg" alt="Bacon Jam Burger" />
+          </div>
+          <div class="burger-card-body">
+            <div class="burger-card-name">Bacon Jam Burger</div>
+            <div class="burger-card-desc">Classic Smash topped with homemade onion bacon jam. The one everybody keeps coming back for.</div>
+          </div>
+        </div>
+        <div class="burger-card fade-up" onclick="showPage('menu')">
+          <div class="burger-card-img">
+            <img src="./italian_american_burger.jpg" alt="Italian American Burger" />
+          </div>
+          <div class="burger-card-body">
+            <div class="burger-card-name">Italian American</div>
+            <div class="burger-card-desc">Roasted cherry tomatoes, basil, pesto, mozzarella + balsamic aioli. A Willy B original.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- STORY -->
+    <section class="story">
+      <div class="story-left fade-up">
+        <div class="section-eyebrow">Our Story</div>
+        <h2 class="section-title">Born in Boone.</h2>
+        <p>We started in 2025 with one truck, one griddle, and one obsession — the perfect smash burger. No shortcuts, no gimmicks. Just quality beef, a blazing hot griddle, and food that actually hits.</p>
+        <p>Find us parked at 363 Howard Street. If the window's open, we're cooking.</p>
+        <button class="btn btn-primary" onclick="showPage('hours')">Hours &amp; Location</button>
+      </div>
+      <div class="story-right">
+        <img src="./bacon_jam_leaves.jpg" alt="Willy B's Bacon Jam Burger" />
+      </div>
+    </section>
+
+    <!-- VISIT CTA -->
+    <section class="visit">
+      <div class="section-eyebrow">Come Find Us</div>
+      <h2 class="visit-title">Come Hungry.</h2>
+      <p class="visit-sub">Open Tuesday through Sunday in the heart of Boone.</p>
+      <div class="visit-info">
+        <div class="visit-info-item">
+          <div class="v-label">Address</div>
+          <div class="v-value">363 Howard St, Boone NC</div>
+        </div>
+        <div class="visit-info-item">
+          <div class="v-label">Tue – Thu</div>
+          <div class="v-value">11:00 am – 8:00 pm</div>
+        </div>
+        <div class="visit-info-item">
+          <div class="v-label">Fri – Sat</div>
+          <div class="v-value">11:00 am – 10:00 pm</div>
+        </div>
+        <div class="visit-info-item">
+          <div class="v-label">Sunday</div>
+          <div class="v-value">12:00 pm – 7:00 pm</div>
+        </div>
+      </div>
+      <button class="btn btn-light" onclick="showPage('contact')">Get in Touch</button>
+    </section>
+
+    <!-- HOME FOOTER -->
+    <footer>
+      <p>© 2025 Willy B's Grill · Boone, NC</p>
+      <p>Best Smash Burgers in the High Country</p>
+    </footer>
+
+  </div><!-- /home -->
+
+  <!-- ══════════════════════════════════════
+       MENU PAGE
+  ══════════════════════════════════════ -->
+  <div class="page" id="page-menu">
+    <div class="page-top">
+      <div class="page-top-inner">
+        <div class="section-eyebrow" style="margin-bottom:0.75rem">What We're Serving</div>
+        <h1>The Menu</h1>
+        <p>Fresh never frozen. Pressed on order. Every single time.</p>
+      </div>
+    </div>
+    <div class="menu-body">
+
+      <div class="menu-category">
+        <div class="menu-cat-label">Burgers</div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Classic Smash</div>
+            <div class="menu-item-desc">Cheese, Lettuce, Tomato + Mayo</div>
+          </div>
+          <div class="menu-item-price">$8.99</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Jalapeño Honey</div>
+            <div class="menu-item-desc">Classic Smash w/ Jalapeños, Hot Honey + Jalapeño Aioli</div>
+          </div>
+          <div class="menu-item-price">$9.99</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Italian American</div>
+            <div class="menu-item-desc">Roasted Cherry Tomatoes, Basil, Pesto, Mozzarella + Balsamic Aioli</div>
+          </div>
+          <div class="menu-item-price">$9.99</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Bacon Jam Burger</div>
+            <div class="menu-item-desc">Classic Smash w/ Homemade Onion Bacon Jam</div>
+          </div>
+          <div class="menu-item-price">$9.99</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Hawaiian Burger</div>
+            <div class="menu-item-desc">Classic Smash w/ Homemade Pineapple Bacon Jam</div>
+          </div>
+          <div class="menu-item-price">$9.99</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Queso Avocado</div>
+            <div class="menu-item-desc">Classic Smash w/ Queso + Fresh Avocado</div>
+          </div>
+          <div class="menu-item-price">$10.49</div>
+        </div>
+      </div>
+
+      <div class="menu-category">
+        <div class="menu-cat-label">Sides</div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">French Fries</div>
+            <div class="menu-item-desc">Golden, crispy, perfectly salted</div>
+          </div>
+          <div class="menu-item-price">$2.99</div>
+        </div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Tater Tots</div>
+            <div class="menu-item-desc">Crispy tots, hot off the griddle</div>
+          </div>
+          <div class="menu-item-price">$2.99</div>
+        </div>
+      </div>
+
+      <div class="menu-category">
+        <div class="menu-cat-label">Drinks</div>
+
+        <div class="menu-item">
+          <div class="menu-item-info">
+            <div class="menu-item-name">Coke · Diet Coke · Sprite · Bottled Water</div>
+            <div class="menu-item-desc">&nbsp;</div>
+          </div>
+          <div class="menu-item-price">$1.00</div>
+        </div>
+      </div>
+
+    </div>
+    <footer>
+      <p>© 2025 Willy B's Grill · Boone, NC</p>
+      <p>Best Smash Burgers in the High Country</p>
+    </footer>
+  </div><!-- /menu -->
+
+  <!-- ══════════════════════════════════════
+       HOURS PAGE
+  ══════════════════════════════════════ -->
+  <div class="page" id="page-hours">
+    <div class="page-top">
+      <div class="page-top-inner">
+        <div class="section-eyebrow" style="margin-bottom:0.75rem">Come Find Us</div>
+        <h1>Hours &amp; Location</h1>
+        <p>We're out there — come pull up.</p>
+      </div>
+    </div>
+    <div class="hours-body">
+
+      <div class="sub-label">Hours of Operation</div>
+      <div class="hours-grid" id="hoursGrid">
+        <div class="hours-row" data-day="1">
+          <span class="hours-day">Monday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time closed">Closed</span>
+        </div>
+        <div class="hours-row" data-day="2">
+          <span class="hours-day">Tuesday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time">11:00 AM – 8:00 PM</span>
+        </div>
+        <div class="hours-row" data-day="3">
+          <span class="hours-day">Wednesday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time">11:00 AM – 8:00 PM</span>
+        </div>
+        <div class="hours-row" data-day="4">
+          <span class="hours-day">Thursday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time">11:00 AM – 8:00 PM</span>
+        </div>
+        <div class="hours-row" data-day="5">
+          <span class="hours-day">Friday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time">11:00 AM – 10:00 PM</span>
+        </div>
+        <div class="hours-row" data-day="6">
+          <span class="hours-day">Saturday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time">11:00 AM – 10:00 PM</span>
+        </div>
+        <div class="hours-row" data-day="0">
+          <span class="hours-day">Sunday <span class="today-badge" style="display:none">Today</span></span>
+          <span class="hours-time">12:00 PM – 7:00 PM</span>
+        </div>
+      </div>
+
+      <div class="sub-label">Find the Truck</div>
+      <div class="location-card">
+        <h3>363 Howard Street</h3>
+        <p>
+          Boone, NC<br>
+          High Country's finest smash burgers, parked and ready.<br><br>
+          <a href="https://maps.google.com/?q=363+Howard+Street+Boone+NC" target="_blank">Get Directions →</a>
+        </p>
+      </div>
+      <div class="map-wrap">
+        <iframe
+          src="https://maps.google.com/maps?q=363+Howard+Street+Boone+NC&t=&z=16&ie=UTF8&iwloc=&output=embed"
+          title="Willy B's Grill — 363 Howard Street, Boone NC"
+          allowfullscreen
+          loading="lazy"
+          referrerpolicy="no-referrer-when-downgrade">
+        </iframe>
+      </div>
+
+    </div>
+    <footer>
+      <p>© 2025 Willy B's Grill · Boone, NC</p>
+      <p>Best Smash Burgers in the High Country</p>
+    </footer>
+  </div><!-- /hours -->
+
+  <!-- ══════════════════════════════════════
+       CONTACT PAGE
+  ══════════════════════════════════════ -->
+  <div class="page" id="page-contact">
+    <div class="page-top">
+      <div class="page-top-inner">
+        <div class="section-eyebrow" style="margin-bottom:0.75rem">Reach Out</div>
+        <h1>Let's Talk.</h1>
+        <p>Questions, catering, or just hungry — we're here.</p>
+      </div>
+    </div>
+    <div class="contact-body">
+
+      <div class="sub-label">Get in Touch</div>
+      <div class="contact-stack">
+        <div class="contact-card">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M22 16.92v3a2 2 0 0 1-2.18 2 19.79 19.79 0 0 1-8.63-3.07A19.5 19.5 0 0 1 4.69 12 19.79 19.79 0 0 1 1.6 3.37a2 2 0 0 1 2-2.18h3a2 2 0 0 1 2 1.72c.127.96.361 1.903.7 2.81a2 2 0 0 1-.45 2.11L8.09 9.91a16 16 0 0 0 6 6l1.27-1.27a2 2 0 0 1 2.11-.45c.907.339 1.85.573 2.81.7A2 2 0 0 1 22 16.92z"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact-label">Phone</div>
+            <div class="contact-value"><a href="tel:9195924479">(919) 592-4479</a></div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/>
+              <circle cx="12" cy="10" r="3"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact-label">Address</div>
+            <div class="contact-value">363 Howard Street, Boone, NC</div>
+          </div>
+        </div>
+        <div class="contact-card">
+          <div class="contact-icon">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/>
+              <line x1="16" y1="2" x2="16" y2="6"/>
+              <line x1="8" y1="2" x2="8" y2="6"/>
+              <line x1="3" y1="10" x2="21" y2="10"/>
+            </svg>
+          </div>
+          <div>
+            <div class="contact-label">Catering &amp; Private Events</div>
+            <div class="contact-value"><a href="tel:9195924479">Call to Book</a></div>
+          </div>
+        </div>
+      </div>
+
+      <div class="sub-label">Follow Along</div>
+      <a class="instagram-block" href="https://instagram.com/willybgrill" target="_blank" rel="noopener">
+        <div class="ig-icon">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+        </div>
+        <div>
+          <div class="ig-handle">@willybgrill</div>
+          <p>Daily specials, location updates, and behind-the-scenes from the truck. Follow us on Instagram to stay in the loop.</p>
+        </div>
+      </a>
+
+    </div>
+    <footer>
+      <p>© 2025 Willy B's Grill · Boone, NC</p>
+      <p>Best Smash Burgers in the High Country</p>
+    </footer>
+  </div><!-- /contact -->
+
+  <!-- ══════════════════════════════════════
+       SCRIPTS
+  ══════════════════════════════════════ -->
+  <script>
+    // ── Email Popup ───────────────────────────────────────────────
+    function setCookie(name, val, days) {
+      const d = new Date();
+      d.setTime(d.getTime() + days * 864e5);
+      document.cookie = name + '=' + val + ';expires=' + d.toUTCString() + ';path=/';
+    }
+    function getCookie(name) {
+      const c = document.cookie.split(';').find(c => c.trim().startsWith(name + '='));
+      return c ? c.trim().split('=')[1] : null;
+    }
+    function closePopup() {
+      const popup = document.getElementById('email-popup');
+      popup.style.opacity = '0';
+      popup.style.transition = 'opacity 0.3s ease';
+      setTimeout(() => { popup.style.display = 'none'; }, 300);
+      setCookie('wb_email_popup', '1', 30);
+    }
+    function handleEmailSignup(e) {
+      e.preventDefault();
+      const email = document.getElementById('email-popup-input').value;
+      document.getElementById('email-popup-form').style.display = 'none';
+      document.getElementById('email-popup-success').style.display = 'block';
+      setCookie('wb_email_popup', '1', 60);
+      setTimeout(closePopup, 2200);
+      // TODO: wire up to your email provider (Mailchimp, Klaviyo, etc.)
+      console.log('New subscriber:', email);
+    }
+    document.getElementById('email-popup-close').addEventListener('click', closePopup);
+    document.getElementById('email-popup-skip').addEventListener('click', closePopup);
+    document.getElementById('email-popup-overlay').addEventListener('click', closePopup);
+
+    // Show popup after 2.5s delay (only if not already seen)
+    window.addEventListener('load', () => {
+      if (!getCookie('wb_email_popup')) {
+        setTimeout(() => {
+          document.getElementById('email-popup').style.display = 'block';
+        }, 2500);
+      }
+    });
+
+    // ── Loading Screen ────────────────────────────────────────────
+    const loader = document.getElementById('loader');
+    window.addEventListener('DOMContentLoaded', () => {
+      setTimeout(() => {
+        loader.classList.add('fade-out');
+        setTimeout(() => { loader.style.display = 'none'; }, 600);
+      }, 1700);
+    });
+
+    // ── Page Router ───────────────────────────────────────────────
+    function showPage(id) {
+      document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+      document.querySelectorAll('.nav-links a').forEach(a => a.classList.remove('active'));
+      document.getElementById('page-' + id).classList.add('active');
+      document.getElementById('nav-' + id).classList.add('active');
+      document.getElementById('navLinks').classList.remove('open');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+
+      // Re-trigger fade-ups on non-home pages
+      if (id !== 'home') {
+        setTimeout(() => {
+          document.getElementById('page-' + id)
+            .querySelectorAll('.fade-up')
+            .forEach(el => el.classList.add('visible'));
+        }, 60);
+      }
+    }
+
+    // ── Scroll: nav shadow ────────────────────────────────────────
+    window.addEventListener('scroll', () => {
+      document.getElementById('mainNav')
+        .classList.toggle('scrolled', window.scrollY > 8);
+    });
+
+    // ── Intersection observer: fade-up ────────────────────────────
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.1, rootMargin: '0px 0px -40px 0px' });
+
+    document.querySelectorAll('.fade-up').forEach(el => observer.observe(el));
+
+    // ── Mobile hamburger ──────────────────────────────────────────
+    function toggleMenu() {
+      document.getElementById('navLinks').classList.toggle('open');
+    }
+
+    // ── Today's hours highlight ───────────────────────────────────
+    window.addEventListener('load', () => {
+      const today = new Date().getDay();
+      document.querySelectorAll('[data-day]').forEach(row => {
+        if (parseInt(row.dataset.day) === today) {
+          row.classList.add('today');
+          row.querySelector('.today-badge').style.display = 'inline';
+        }
+      });
+    });
+  </script>
+
+</body>
+</html>
