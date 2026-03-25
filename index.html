@@ -8,6 +8,12 @@
   <style>
     *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
 
+    html, body {
+      overflow-x: hidden;
+      max-width: 100%;
+      width: 100%;
+    }
+
     :root {
       --bg:          #FAF8F4;
       --bg-alt:      #F1EBE0;
@@ -694,7 +700,30 @@
       color: rgba(250,248,244,0.35);
       letter-spacing: 1.5px;
       font-style: italic;
+      margin-bottom: 2rem;
+    }
+    .btn-ig {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.55rem;
+      padding: 0.85rem 2rem;
+      background: transparent;
+      color: var(--bg);
+      border: 1.5px solid rgba(250,248,244,0.3);
+      font-family: 'Inter', sans-serif;
+      font-size: 0.7rem;
+      font-weight: 700;
+      letter-spacing: 2.5px;
+      text-transform: uppercase;
+      text-decoration: none;
+      cursor: pointer;
+      transition: all 0.22s ease;
       margin-bottom: 3rem;
+    }
+    .btn-ig:hover {
+      background: rgba(250,248,244,0.1);
+      border-color: rgba(250,248,244,0.6);
+      transform: translateY(-2px);
     }
 
     /* ══════════════════════════════════════
@@ -1207,9 +1236,6 @@
           <img src="./attachments/IMG_4676.jpeg" alt="Willy B's Burger" loading="lazy" />
         </div>
         <div class="gallery-item fade-up wide">
-          <img src="./italian_american_dreaming.jpg" alt="Italian American Burger" loading="lazy" />
-        </div>
-        <div class="gallery-item fade-up wide">
           <img src="./bacon_jam_leaves.jpg" alt="Bacon Jam Burger" loading="lazy" />
         </div>
       </div>
@@ -1225,7 +1251,7 @@
         <button class="btn btn-primary" onclick="showPage('hours')">Hours &amp; Location</button>
       </div>
       <div class="story-right">
-        <img src="./download.jpg" alt="Willy B's Food Truck" loading="lazy" />
+        <img src="./attachments/IMG_4676.jpeg" alt="Willy B's Burger" loading="lazy" />
       </div>
     </section>
 
@@ -1249,7 +1275,17 @@
         </div>
       </div>
       <p class="visit-note">Hours subject to change — follow us on Instagram for updates</p>
-      <button class="btn btn-light" onclick="showPage('contact')">Get in Touch</button>
+      <div style="display:flex; gap:1rem; flex-wrap:wrap; justify-content:center; margin-bottom:3rem;">
+        <button class="btn btn-light" onclick="showPage('contact')">Get in Touch</button>
+        <a class="btn-ig" href="https://instagram.com/willybgrill" target="_blank" rel="noopener">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="2" width="20" height="20" rx="5" ry="5"/>
+            <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+            <line x1="17.5" y1="6.5" x2="17.51" y2="6.5"/>
+          </svg>
+          @willybgrill
+        </a>
+      </div>
     </section>
 
     <!-- HOME FOOTER -->
@@ -1465,7 +1501,7 @@
           </div>
           <div>
             <div class="contact-label">Address</div>
-            <div class="contact-value">363 Howard Street, Boone, NC</div>
+            <div class="contact-value"><a href="https://maps.apple.com/?q=363+Howard+Street,+Boone,+NC" target="_blank">363 Howard Street, Boone, NC</a></div>
           </div>
         </div>
         <div class="contact-card">
